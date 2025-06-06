@@ -98,19 +98,19 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    
-    /* Dark mode theme colors */
-    .theme-blue & {
-      --theme-color: 213 94% 68%;
-    }
-    
-    .theme-purple & {
-      --theme-color: 270 86% 70%;
-    }
-    
-    .theme-green & {
-      --theme-color: 142 69% 58%;
-    }
+  }
+  
+  /* Dark mode theme colors */
+  .dark.theme-blue {
+    --theme-color: 213 94% 68%;
+  }
+  
+  .dark.theme-purple {
+    --theme-color: 270 86% 70%;
+  }
+  
+  .dark.theme-green {
+    --theme-color: 142 69% 58%;
   }
 }
 
@@ -134,4 +134,22 @@ body {
 
 .border-theme {
   border-color: hsl(var(--theme-color));
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 1px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--theme-color) / 0.5);
+  border-radius: 0.5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--theme-color));
 }

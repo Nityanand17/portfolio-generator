@@ -34,21 +34,23 @@ export function HeroSection({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="w-48 h-48 relative overflow-hidden rounded-full border-4 border-theme"
+              className="w-56 h-56 md:w-64 md:h-64 relative overflow-hidden rounded-full border-4 border-theme shadow-lg"
             >
               <Image
                 src={profileImage || "/placeholder.svg"}
                 alt={name}
-                width={192}
-                height={192}
+                fill
+                sizes="(max-width: 768px) 14rem, 16rem"
                 className="object-cover"
+                priority
+                unoptimized={profileImage?.startsWith('data:')}
               />
             </motion.div>
           )}
 
           <div className="text-left">
             <h2 className="text-xl md:text-2xl mb-2">Hi, I am</h2>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 text-theme">{name}</h1>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 text-theme">{name}</h1>
             <div className="text-xl md:text-2xl mb-2">
               I am a{" "}
               <span className="text-theme font-medium">

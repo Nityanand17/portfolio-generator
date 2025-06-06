@@ -40,9 +40,9 @@ export function PortfolioNavbar({ name }: { name: string }) {
         scrolled ? "shadow-md" : ""
       )}
     >
-      <div className="container mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
-          <div className="flex-shrink-0 font-bold text-xl">{name}</div>
+          <div className="flex-shrink-0 font-bold text-xl text-theme">{name}</div>
 
           {/* Desktop menu */}
           <div className="hidden md:block">

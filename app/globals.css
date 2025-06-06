@@ -53,18 +53,43 @@
     --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
     --ring: 221 83% 53%;
+    --theme-color: 221 83% 53%;
   }
 
   .theme-purple {
     --primary: 270 76% 53%;
     --primary-foreground: 270 40% 98%;
     --ring: 270 76% 53%;
+    --theme-color: 270 76% 53%;
   }
 
   .theme-green {
     --primary: 142 76% 36%;
     --primary-foreground: 142 40% 98%;
     --ring: 142 76% 36%;
+    --theme-color: 142 76% 36%;
+  }
+  
+  /* Dark mode theme color variations */
+  .dark.theme-blue {
+    --primary: 213 94% 68%;
+    --primary-foreground: 210 40% 98%;
+    --ring: 213 94% 68%;
+    --theme-color: 213 94% 68%;
+  }
+  
+  .dark.theme-purple {
+    --primary: 270 86% 70%;
+    --primary-foreground: 270 40% 98%;
+    --ring: 270 86% 70%;
+    --theme-color: 270 86% 70%;
+  }
+  
+  .dark.theme-green {
+    --primary: 142 69% 58%;
+    --primary-foreground: 142 40% 98%;
+    --ring: 142 69% 58%;
+    --theme-color: 142 69% 58%;
   }
 }
 
@@ -84,4 +109,17 @@
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Theme color utility classes */
+.text-theme {
+  color: hsl(var(--theme-color));
+}
+
+.bg-theme {
+  background-color: hsl(var(--theme-color));
+}
+
+.border-theme {
+  border-color: hsl(var(--theme-color));
 }

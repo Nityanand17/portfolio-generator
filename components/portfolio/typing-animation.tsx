@@ -56,7 +56,7 @@ export function TypingAnimation({
   return (
     <span className="inline-block">
       {text}
-      <span className="animate-pulse">|</span>
+      <span className="animate-pulse text-theme">|</span>
     </span>
   )
 }

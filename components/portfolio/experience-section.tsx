@@ -24,7 +24,7 @@ export function ExperienceSection({
 
   return (
     <section id={id} className="py-20">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 50 }}
@@ -33,8 +33,8 @@ export function ExperienceSection({
           className="space-y-6"
         >
           <h2 className="text-3xl font-bold text-theme">Experience</h2>
-          <div className="h-1 w-20 bg-theme"></div>
-          <div className="space-y-8 mt-8">
+          <div className="h-0.5 w-16 bg-theme"></div>
+          <div className="space-y-6 mt-8">
             {experience.map((item, index) => (
               <motion.div
                 key={index}
@@ -42,7 +42,7 @@ export function ExperienceSection({
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
               >
-                <Card>
+                <Card className="overflow-hidden border-none shadow-md">
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <CardTitle>{item.role}</CardTitle>

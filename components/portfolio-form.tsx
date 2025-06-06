@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { PlusCircle, Trash2 } from "lucide-react"
 import { z } from "zod"
@@ -73,6 +73,8 @@ export function PortfolioForm() {
   const router = useRouter()
   const [skillInput, setSkillInput] = useState("")
   const [activeTab, setActiveTab] = useState("basic")
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Initialize form with default values
   const form = useForm<FormValues>({
@@ -88,6 +90,12 @@ export function PortfolioForm() {
         if (savedData) {
           const parsedData = JSON.parse(savedData)
           form.reset(parsedData)
+          
+          // Set image preview if it exists
+          if (parsedData.profileImage) {
+            setImagePreview(parsedData.profileImage)
+          }
+          
           toast.success("Previous form data loaded")
         }
       } catch (error) {
@@ -175,6 +183,47 @@ export function PortfolioForm() {
     }
   }
 
+  // Handle image upload
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image is too large. Please upload an image less than 5MB")
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string
+      setImagePreview(dataUrl)
+      form.setValue("profileImage", dataUrl)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Clear uploaded image
+  const clearImage = () => {
+    setImagePreview(null)
+    form.setValue("profileImage", "")
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  // Clear all form data
+  const clearAllData = () => {
+    if (window.confirm("Are you sure you want to clear all form data? This cannot be undone.")) {
+      localStorage.removeItem("portfolioFormData")
+      form.reset(defaultValues)
+      setImagePreview(null)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""
+      }
+      toast.success("All form data has been cleared")
+    }
+  }
+
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
@@ -245,11 +294,44 @@ export function PortfolioForm() {
                   name="profileImage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Profile Image URL</FormLabel>
+                      <FormLabel>Profile Image</FormLabel>
                       <FormControl>
-                        <Input placeholder="https://example.com/your-image.jpg" {...field} />
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-4">
+                            <Input 
+                              type="file" 
+                              accept="image/*" 
+                              onChange={handleImageUpload}
+                              ref={fileInputRef}
+                              className="max-w-xs"
+                            />
+                            {imagePreview && (
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={clearImage}
+                              >
+                                Clear
+                              </Button>
+                            )}
+                          </div>
+                          
+                          {imagePreview && (
+                            <div className="mt-4">
+                              <p className="text-sm mb-2">Preview:</p>
+                              <div className="relative w-32 h-32 overflow-hidden rounded-full border-2 border-gray-200">
+                                <img 
+                                  src={imagePreview} 
+                                  alt="Profile preview" 
+                                  className="object-cover w-full h-full"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
-                      <FormDescription>Enter a URL to your profile image</FormDescription>
+                      <FormDescription>Upload a profile image (max size: 5MB)</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -282,15 +364,61 @@ export function PortfolioForm() {
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a theme color" />
+                            <div className="flex items-center">
+                              <div 
+                                className={`w-4 h-4 rounded-full mr-2 ${
+                                  field.value === "blue" ? "bg-blue-500" : 
+                                  field.value === "purple" ? "bg-purple-500" : 
+                                  "bg-green-600"
+                                }`}
+                              ></div>
+                              <SelectValue placeholder="Select a theme color" />
+                            </div>
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="blue">Blue</SelectItem>
-                          <SelectItem value="purple">Purple</SelectItem>
-                          <SelectItem value="green">Green</SelectItem>
+                          <SelectItem value="blue">
+                            <div className="flex items-center">
+                              <div className="w-4 h-4 rounded-full bg-blue-500 mr-2"></div>
+                              Blue
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="purple">
+                            <div className="flex items-center">
+                              <div className="w-4 h-4 rounded-full bg-purple-500 mr-2"></div>
+                              Purple
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="green">
+                            <div className="flex items-center">
+                              <div className="w-4 h-4 rounded-full bg-green-600 mr-2"></div>
+                              Green
+                            </div>
+                          </SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormDescription>
+                        Choose a theme color for your portfolio headings and accents
+                      </FormDescription>
+                      <div className="mt-2 p-3 border rounded-md">
+                        <p className="text-sm mb-2">Preview:</p>
+                        <h3 
+                          className={`text-lg font-semibold ${
+                            field.value === "blue" ? "text-blue-500" : 
+                            field.value === "purple" ? "text-purple-500" : 
+                            "text-green-600"
+                          }`}
+                        >
+                          Sample Heading
+                        </h3>
+                        <div 
+                          className={`h-1 w-16 mt-1 ${
+                            field.value === "blue" ? "bg-blue-500" : 
+                            field.value === "purple" ? "bg-purple-500" : 
+                            "bg-green-600"
+                          }`}
+                        ></div>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -598,22 +726,16 @@ export function PortfolioForm() {
               </TabsContent>
             </Tabs>
 
-            <div className="flex gap-4">
-              <Button type="submit" className="flex-1">
-                Generate Portfolio
-              </Button>
+            <div className="flex justify-between items-center pt-6 border-t">
               <Button 
                 type="button" 
                 variant="outline" 
-                onClick={() => {
-                  localStorage.removeItem("portfolioFormData")
-                  form.reset(defaultValues)
-                  toast.success("Form data cleared")
-                }}
-                className="w-auto"
+                onClick={clearAllData}
+                className="text-destructive border-destructive hover:bg-destructive/10"
               >
-                Clear Data
+                Clear All Data
               </Button>
+              <Button type="submit">Generate Portfolio</Button>
             </div>
           </form>
         </Form>

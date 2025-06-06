@@ -23,7 +23,7 @@ export function EducationSection({
 
   return (
     <section id={id} className="py-20">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 50 }}
@@ -31,8 +31,8 @@ export function EducationSection({
           transition={{ duration: 0.8 }}
           className="space-y-6"
         >
-          <h2 className="text-3xl font-bold">Education</h2>
-          <div className="h-1 w-20 bg-primary"></div>
+          <h2 className="text-3xl font-bold text-theme">Education</h2>
+          <div className="h-0.5 w-16 bg-theme"></div>
           <div className="space-y-6 mt-8">
             {education.map((item, index) => (
               <motion.div
@@ -41,7 +41,7 @@ export function EducationSection({
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
               >
-                <Card>
+                <Card className="overflow-hidden border-none shadow-md">
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <CardTitle>{item.school}</CardTitle>
@@ -49,7 +49,7 @@ export function EducationSection({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-primary font-medium">{item.degree}</p>
+                    <p className="font-medium">{item.degree}</p>
                   </CardContent>
                 </Card>
               </motion.div>

@@ -10,7 +10,7 @@ export function AboutSection({ id, about }: { id: string; about: string }) {
 
   return (
     <section id={id} className="py-20">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 50 }}
@@ -19,7 +19,7 @@ export function AboutSection({ id, about }: { id: string; about: string }) {
           className="space-y-6"
         >
           <h2 className="text-3xl font-bold text-theme">About Me</h2>
-          <div className="h-1 w-20 bg-theme"></div>
+          <div className="h-0.5 w-16 bg-theme"></div>
           <p className="text-lg leading-relaxed text-muted-foreground whitespace-pre-line">{about}</p>
         </motion.div>
       </div>

@@ -19,6 +19,7 @@ export default function PortfolioPage() {
   const searchParams = useSearchParams()
   const [portfolioData, setPortfolioData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [themeColor, setThemeColor] = useState("blue")
 
   useEffect(() => {
     try {
@@ -29,6 +30,10 @@ export default function PortfolioPage() {
 
         // Apply theme color
         if (data.themeColor) {
+          setThemeColor(data.themeColor)
+          // Remove any existing theme classes
+          document.documentElement.classList.remove("theme-blue", "theme-purple", "theme-green")
+          // Add the new theme class to the HTML element
           document.documentElement.classList.add(`theme-${data.themeColor}`)
         }
       }
@@ -63,11 +68,11 @@ export default function PortfolioPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-background text-foreground`}>
+    <div className="min-h-screen bg-background text-foreground">
       <DottedBackground />
       <PortfolioNavbar name={portfolioData.fullName} />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
         <HeroSection
           name={portfolioData.fullName}
           title={portfolioData.title}
