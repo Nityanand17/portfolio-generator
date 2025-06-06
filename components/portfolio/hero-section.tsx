@@ -41,7 +41,7 @@ export function HeroSection({
                 alt={name}
                 fill
                 sizes="(max-width: 768px) 14rem, 16rem"
-                className="object-cover"
+                className="object-cover transition-transform duration-300 hover:scale-110 hover:rotate-3"
                 priority
                 unoptimized={profileImage?.startsWith('data:')}
               />

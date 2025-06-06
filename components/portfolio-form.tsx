@@ -162,9 +162,11 @@ export function PortfolioForm() {
     
     // Save the form data to localStorage
     localStorage.setItem("portfolioFormData", JSON.stringify(data))
+    // Save the transformed data to localStorage
+    localStorage.setItem("portfolioTransformedData", JSON.stringify(transformedData))
     
-    // Navigate to the generated portfolio page with the form data
-    router.push(`/portfolio?data=${encodeURIComponent(JSON.stringify(transformedData))}`)
+    // Navigate to the generated portfolio page without passing data in URL
+    router.push('/portfolio')
   }
 
   // Handle adding skills with comma or enter key

@@ -16,16 +16,16 @@ import { HeroSection } from "@/components/portfolio/hero-section"
 import { PortfolioNavbar } from "@/components/portfolio/portfolio-navbar"
 
 export default function PortfolioPage() {
-  const searchParams = useSearchParams()
   const [portfolioData, setPortfolioData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [themeColor, setThemeColor] = useState("blue")
 
   useEffect(() => {
     try {
-      const dataParam = searchParams.get("data")
-      if (dataParam) {
-        const data = JSON.parse(decodeURIComponent(dataParam))
+      // Get data from localStorage instead of URL parameters
+      const storedData = localStorage.getItem("portfolioTransformedData")
+      if (storedData) {
+        const data = JSON.parse(storedData)
         setPortfolioData(data)
 
         // Apply theme color
@@ -42,7 +42,7 @@ export default function PortfolioPage() {
     } finally {
       setLoading(false)
     }
-  }, [searchParams])
+  }, [])
 
   if (loading) {
     return (
