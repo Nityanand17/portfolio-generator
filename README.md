@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Portfolio Generator
 
 A modern, responsive portfolio generator built with Next.js, TailwindCSS, and Framer Motion. Create your professional portfolio in minutes with a beautiful UI, customizable theme colors, and interactive animations.
@@ -64,3 +65,6 @@ MIT
 ## Credits
 
 Created with ❤️ using Next.js, TailwindCSS, and Framer Motion. 
+=======
+# portfolio-generator
+>>>>>>> 9adf8780be340a28b69164718b7881a5a7f18df0
