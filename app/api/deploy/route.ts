@@ -26,7 +26,8 @@ function generatePortfolioFiles(portfolioData: any) {
     "class-variance-authority": "0.7.0",
     "clsx": "2.0.0",
     "tailwind-merge": "2.2.0",
-    "tailwindcss-animate": "1.0.7"
+    "tailwindcss-animate": "1.0.7",
+    "next-auth": "4.24.5"
   },
   "devDependencies": {
     "@types/node": "20.8.10",
@@ -976,6 +977,33 @@ yarn dev
 \`\`\`
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the portfolio.
+
+## Deployment on Vercel
+
+When deploying to Vercel, make sure to set these environment variables:
+
+\`\`\`
+NEXTAUTH_URL=https://your-vercel-domain.vercel.app
+NEXTAUTH_SECRET=your_generated_secret
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+\`\`\`
+
+In your GitHub OAuth App settings, add this callback URL:
+https://your-vercel-domain.vercel.app/api/auth/callback/github
+
+When deploying to Vercel, make sure to set the following environment variables:
+
+\`\`\`
+NEXTAUTH_URL=https://your-vercel-domain.vercel.app
+NEXTAUTH_SECRET=your_generated_secret
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+\`\`\`
+
+Also, update your GitHub OAuth App settings to include the callback URL:
+- Go to GitHub Developer Settings > OAuth Apps
+- Add the callback URL: \`https://your-vercel-domain.vercel.app/api/auth/callback/github\`
 `;
 
   return {
@@ -1042,7 +1070,7 @@ export async function POST(req: NextRequest) {
     if (!repoExists) {
       await octokit.repos.createForAuthenticatedUser({
         name: repoName,
-        description: `Portfolio website for ${portfolioData.fullName}`,
+        description: \`Portfolio website for ${portfolioData.fullName}\`,
         private: false,
         auto_init: true,
       });
@@ -1063,7 +1091,7 @@ export async function POST(req: NextRequest) {
     const { data: refData } = await octokit.git.getRef({
       owner: username,
       repo: repoName,
-      ref: `heads/${defaultBranch}`,
+      ref: \`heads/${defaultBranch}\`,
     });
     
     const latestCommitSha = refData.object.sha;
@@ -1117,7 +1145,7 @@ export async function POST(req: NextRequest) {
     await octokit.git.updateRef({
       owner: username,
       repo: repoName,
-      ref: `heads/${defaultBranch}`,
+      ref: \`heads/${defaultBranch}\`,
       sha: newCommit.sha,
     });
 
@@ -1133,7 +1161,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
           success: true,
           message: "Repository created/updated successfully",
-          repoUrl: `https://github.com/${username}/${repoName}`,
+          repoUrl: \`https://github.com/${username}/${repoName}\`,
           deployUrl: null,
           note: "Vercel deployment skipped - no API token provided"
         });
@@ -1146,13 +1174,13 @@ export async function POST(req: NextRequest) {
           name: repoName,
           gitSource: {
             type: 'github',
-            repo: `${username}/${repoName}`,
+            repo: \`${username}/${repoName}\`,
             ref: defaultBranch,
           },
         },
         {
           headers: {
-            Authorization: `Bearer ${vercelToken}`,
+            Authorization: \`Bearer ${vercelToken}\`,
           },
         }
       );
@@ -1160,7 +1188,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message: "Repository created and deployed successfully",
-        repoUrl: `https://github.com/${username}/${repoName}`,
+        repoUrl: \`https://github.com/${username}/${repoName}\`,
         deployUrl: vercelResponse.data.url,
       });
       
@@ -1171,7 +1199,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         message: "Repository created/updated successfully, but Vercel deployment failed",
-        repoUrl: `https://github.com/${username}/${repoName}`,
+        repoUrl: \`https://github.com/${username}/${repoName}\`,
         deployUrl: null,
         error: "Vercel deployment failed"
       });
