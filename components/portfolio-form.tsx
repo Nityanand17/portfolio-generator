@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { PlusCircle, Trash2 } from "lucide-react"
+import { PlusCircle, Trash2, Github } from "lucide-react"
 import { z } from "zod"
 import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -18,6 +18,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
+import { signIn, signOut, useSession } from "next-auth/react"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 // Define the form schema
 const formSchema = z.object({
@@ -71,10 +73,20 @@ const defaultValues: FormValues = {
 
 export function PortfolioForm() {
   const router = useRouter()
+  const { data: session } = useSession()
   const [skillInput, setSkillInput] = useState("")
   const [activeTab, setActiveTab] = useState("basic")
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isDeploying, setIsDeploying] = useState(false)
+  const [deploymentStatus, setDeploymentStatus] = useState<{
+    success?: boolean;
+    message?: string;
+    repoUrl?: string;
+    deployUrl?: string;
+  } | null>(null)
+  const [showDeployDialog, setShowDeployDialog] = useState(false)
+  const [repoName, setRepoName] = useState("")
 
   // Initialize form with default values
   const form = useForm<FormValues>({
@@ -223,6 +235,78 @@ export function PortfolioForm() {
         fileInputRef.current.value = ""
       }
       toast.success("All form data has been cleared")
+    }
+  }
+
+  // Handle deploy button click
+  const handleDeploy = async () => {
+    // Check if user is logged in
+    if (!session) {
+      // Trigger GitHub sign in
+      signIn("github");
+      return;
+    }
+    
+    // Show the deployment dialog
+    setShowDeployDialog(true);
+  }
+  
+  // Handle the actual deployment
+  const startDeployment = async () => {
+    try {
+      // Validate repo name
+      if (!repoName.trim()) {
+        toast.error("Please enter a repository name");
+        return;
+      }
+      
+      // Close dialog and show loading state
+      setShowDeployDialog(false);
+      setIsDeploying(true);
+      
+      // Get the transformed data
+      const storedData = localStorage.getItem("portfolioTransformedData");
+      if (!storedData) {
+        toast.error("Portfolio data not found. Please generate your portfolio first.");
+        setIsDeploying(false);
+        return;
+      }
+      
+      const portfolioData = JSON.parse(storedData);
+      
+      // Call the deploy API
+      const response = await fetch("/api/deploy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          portfolioData,
+          repoName,
+        }),
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        setDeploymentStatus(result);
+        toast.success("Deployment successful!");
+      } else {
+        toast.error(`Deployment failed: ${result.error}`);
+        setDeploymentStatus({
+          success: false,
+          message: result.error || "Deployment failed",
+        });
+      }
+    } catch (error) {
+      console.error("Deployment error:", error);
+      toast.error("An error occurred during deployment");
+      setDeploymentStatus({
+        success: false,
+        message: "An error occurred during deployment",
+      });
+    } finally {
+      setIsDeploying(false);
     }
   }
 
@@ -737,10 +821,105 @@ export function PortfolioForm() {
               >
                 Clear All Data
               </Button>
-              <Button type="submit">Generate Portfolio</Button>
+              <div className="flex gap-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={handleDeploy}
+                  className="flex items-center gap-2"
+                  disabled={isDeploying}
+                >
+                  <Github className="h-4 w-4" />
+                  {isDeploying ? "Deploying..." : "Deploy Portfolio"}
+                </Button>
+                <Button type="submit">Generate Portfolio</Button>
+              </div>
             </div>
           </form>
         </Form>
+        
+        {/* Deployment Dialog */}
+        <Dialog open={showDeployDialog} onOpenChange={setShowDeployDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Deploy Your Portfolio</DialogTitle>
+              <DialogDescription>
+                This will create a GitHub repository and deploy your portfolio to Vercel.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label htmlFor="repoName" className="text-right">
+                  Repository Name
+                </label>
+                <Input
+                  id="repoName"
+                  value={repoName}
+                  onChange={(e) => setRepoName(e.target.value)}
+                  placeholder="my-portfolio"
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowDeployDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={startDeployment}>
+                Deploy to GitHub
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Deployment Status Dialog */}
+        {deploymentStatus && (
+          <Dialog open={!!deploymentStatus} onOpenChange={() => setDeploymentStatus(null)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {deploymentStatus.success === false ? "Deployment Failed" : "Deployment Successful"}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <p className="mb-4">{deploymentStatus.message}</p>
+                
+                {deploymentStatus.repoUrl && (
+                  <div className="mb-2">
+                    <p className="font-semibold">GitHub Repository:</p>
+                    <a 
+                      href={deploymentStatus.repoUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      {deploymentStatus.repoUrl}
+                    </a>
+                  </div>
+                )}
+                
+                {deploymentStatus.deployUrl && (
+                  <div className="mb-2">
+                    <p className="font-semibold">Deployed Site:</p>
+                    <a 
+                      href={deploymentStatus.deployUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      {deploymentStatus.deployUrl}
+                    </a>
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button onClick={() => setDeploymentStatus(null)}>
+                  Close
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
       </CardContent>
     </Card>
   )

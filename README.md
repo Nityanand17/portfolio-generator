@@ -1,49 +1,92 @@
 # Portfolio Generator
 
-A modern, responsive portfolio generator built with Next.js, TailwindCSS, and Framer Motion. Create your professional portfolio in minutes with a beautiful UI, customizable theme colors, and interactive animations.
+A Next.js application that allows users to create and deploy their professional portfolio websites with ease.
 
 ## Features
 
-- 🎨 Customizable theme colors (Blue, Purple, Green)
-- 🌓 Dark/Light mode toggle with smooth transitions
-- 📱 Fully responsive design for all devices
-- ✨ Smooth animations and transitions
-- 📝 Form with auto-save functionality
-- 🧩 Modular sections (About, Skills, Experience, Projects, Education)
-- 🖼️ SVG background patterns that adapt to theme
-- 💾 LocalStorage data persistence
-- 🖱️ Interactive hover effects
+- **Portfolio Form**: Fill out a form with your professional details to generate a portfolio
+- **Preview**: View your generated portfolio before deploying
+- **Deploy Portfolio**: Deploy your portfolio to GitHub and Vercel with a single click
 
-## Development
+## Tech Stack
 
-To run the project locally:
+- Next.js 13+ (App Router)
+- TypeScript
+- Tailwind CSS
+- NextAuth.js for GitHub authentication
+- GitHub API for repository creation
+- Vercel API for deployment
 
-```bash
-# Install dependencies
-npm install
+## Getting Started
 
-# Run development server
-npm run dev
+### Prerequisites
 
-# Build for production
-npm run build
+- Node.js 18+ and npm/yarn/pnpm
+- GitHub account
+- Vercel account (optional, for deployment)
 
-# Start production server
-npm start
-```
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/portfolio-generator.git
+   cd portfolio-generator
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env.local` file with the following variables:
+   ```
+   # NextAuth Configuration
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your-nextauth-secret
+   
+   # GitHub OAuth
+   GITHUB_CLIENT_ID=your-github-client-id
+   GITHUB_CLIENT_SECRET=your-github-client-secret
+   
+   # Vercel API (optional)
+   VERCEL_TOKEN=your-vercel-api-token
+   ```
+
+4. Create a GitHub OAuth application:
+   - Go to GitHub Settings > Developer settings > OAuth Apps > New OAuth App
+   - Set the Authorization callback URL to `http://localhost:3000/api/auth/callback/github`
+   - Copy the Client ID and Client Secret to your `.env.local` file
+
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## How to Use
 
-1. Fill out the form with your personal information
-2. Add your skills, experience, projects, and education
-3. Choose a theme color that matches your style
-4. Toggle between light and dark mode with the theme button
-5. Click "Generate Portfolio" to view your portfolio
-6. Your data is automatically saved in your browser
+1. Fill out the portfolio form with your information
+2. Click "Generate Portfolio" to preview your portfolio
+3. Click "Deploy Portfolio" to:
+   - Authenticate with GitHub
+   - Create a new repository
+   - Push your portfolio code
+   - Deploy to Vercel (if configured)
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `NEXTAUTH_URL` | The base URL of your application |
+| `NEXTAUTH_SECRET` | A secret string used to encrypt session cookies |
+| `GITHUB_CLIENT_ID` | Your GitHub OAuth application client ID |
+| `GITHUB_CLIENT_SECRET` | Your GitHub OAuth application client secret |
+| `VERCEL_TOKEN` | (Optional) Your Vercel API token for deployments |
 
 ## License
 
-MIT
+[MIT](LICENSE)
 
 ## Credits
 

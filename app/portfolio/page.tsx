@@ -91,10 +91,6 @@ export default function PortfolioPage() {
         <EducationSection id="education" education={portfolioData.education} />
 
         <div className="flex justify-center py-12 gap-4">
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Download Resume
-          </Button>
           <Link href="/">
             <Button variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />

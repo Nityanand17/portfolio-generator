@@ -3,13 +3,14 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { NextAuthProvider } from "@/components/next-auth-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Portfolio Generator",
-  description: "Create your professional portfolio in minutes",
-    generator: 'v0.dev'
+  description: "Generate a beautiful portfolio website in minutes",
+    generator: 'Nityanand Yadav'
 }
 
 export default function RootLayout({
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+        <NextAuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            {children}
+          </ThemeProvider>
+        </NextAuthProvider>
       </body>
     </html>
   )
