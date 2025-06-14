@@ -2,11 +2,6 @@ import { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import "@/lib/types" // Import the extended types
 
-// Get the site URL from environment or use a default for local development
-const siteUrl = process.env.NEXTAUTH_URL || 
-                process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 
-                "http://localhost:3000";
-
 export const authOptions: NextAuthOptions = {
   providers: [
     GithubProvider({
@@ -32,21 +27,6 @@ export const authOptions: NextAuthOptions = {
       // Send properties to the client
       session.accessToken = token.accessToken
       return session
-    },
-  },
-  pages: {
-    signIn: '/portfolio',
-  },
-  useSecureCookies: process.env.NODE_ENV === "production",
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
     },
   },
 } 
