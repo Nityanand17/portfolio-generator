@@ -29,7 +29,7 @@ A Next.js application that allows users to create and deploy their professional 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/portfolio-generator.git
+   git clone https://github.com/Nityanand17/portfolio-generator.git
    cd portfolio-generator
    ```
 
